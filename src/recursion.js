@@ -190,7 +190,35 @@ var multiply = function(x, y) {
 // 13. Write a function that divides two numbers without using the / operator or
 // Math methods to arrive at an approximate quotient (ignore decimal endings).
 var divide = function(x, y) {
+  var isNegative= false;
+  if (x < 0 && y < 0) {
+    x = -x;
+    y = -y;
+  }else if (x < 0 ) {
+    isNegative = true;
+    x = -x;
+  } else if ( y < 0) {
+    isNegative = true;
+    y = -y;
+  }
+  if (x === 0 && y === 0) {
+    return NaN;
+  }
+  if  (y == 0) {
+    return null;
+  }
+  if  (x < y){
+    return quotient = 0;
+  }
+  if (isNegative === false) {
+    return quotient = 1 + divide(x - y , y);
+  } 
+  if (isNegative === true) {
+    return  quotient = -(1 + divide(x - y, y)) ;
+  }
+  
 };
+   
 
 // 14. Find the greatest common divisor (gcd) of two positive numbers. The GCD of two
 // integers is the greatest integer that divides both x and y with no remainder.
@@ -198,6 +226,14 @@ var divide = function(x, y) {
 // http://www.cse.wustl.edu/~kjg/cse131/Notes/Recursion/recursion.html
 // https://www.khanacademy.org/computing/computer-science/cryptography/modarithmetic/a/the-euclidean-algorithm
 var gcd = function(x, y) {
+  
+   if (x < 0 || y < 0) {
+	 return null;
+   } else if (x % y === 0) {
+     return y;
+   }
+   return gcd(y, x % y);
+
 };
 
 // 15. Write a function that compares each character of two strings and returns true if
@@ -209,25 +245,41 @@ var compareStr = function(str1, str2) {
    return true;
  }
  var isTrue = str1[0] === str2[0];
- str1 = str1.split("").splice(1).join("");
- str2 = str2.split("").splice(1).join("");
- return isTrue && compareStr(str1, str2);
+ return isTrue && compareStr(str1.slice(1), str2.slice(1));
 };
 
 // 16. Write a function that accepts a string and creates an array where each letter
 // occupies an index of the array.
+
+
 var createArray = function(str) {
+  if (str.length === 0) {
+	return [];
+  } else if (str.length === 1) {
+    return resultArr = [str];
+  }
+  return resultArr = [str[0]].concat(createArray(str.slice(1)));
 };
 
 // 17. Reverse the order of an array
 var reverseArr = function(array) {
+   if (array.length <= 1) {
+	  return array;
+   }
+   return reverseArr(array.slice(1)).concat(array[0]);
 };
 
 // 18. Create a new array with a given value and length.
 // buildList(0,5) // [0,0,0,0,0]
 // buildList(7,3) // [7,7,7]
 var buildList = function(value, length) {
+  if (length === 0) {
+    return [];
+  }
+  length -= 1;
+  return [value].concat(buildList(value, length));
 };
+
 
 // 19. Implement FizzBuzz. Given integer n, return an array of the string representations of 1 to n.
 // For multiples of three, output 'Fizz' instead of the number.
@@ -235,17 +287,43 @@ var buildList = function(value, length) {
 // For numbers which are multiples of both three and five, output “FizzBuzz” instead of the number.
 // fizzBuzz(5) // ['1','2','Fizz','4','Buzz']
 var fizzBuzz = function(n) {
-};
+  if (typeof n === 'string') {
+    n = Number(n);
+  }
+  var result = [n.toString()];
+  if (n === 1) {
+    return [].concat("1");
+  } else if (n % 3 === 0 && n % 5 === 0){
+    result =  ['FizzBuzz'];
+  } else if (n % 3 === 0) {
+    result = ['Fizz'];
+  
+  } else if (n % 5 === 0) {
+    result = ['Buzz'];
+  } 
+  return fizzBuzz((n - 1).toString()).concat(result);
+ };
 
 // 20. Count the occurence of a value in a list.
 // countOccurrence([2,7,4,4,1,4], 4) // 3
 // countOccurrence([2,'banana',4,4,1,'banana'], 'banana') // 2
 var countOccurrence = function(array, value) {
+  if (array.length === 0){
+     return 0;
+  } if (array[0] === value) {
+    return 1 + countOccurrence(array.slice(1),value);
+  } else {
+    return countOccurrence(array.slice(1),value);
+  }
 };
 
 // 21. Write a recursive version of map.
 // rMap([1,2,3], timesTwo); // [2,4,6]
 var rMap = function(array, callback) {
+  if (array.length === 0) {
+    return [];
+  }
+  return [ callback( array[ 0 ] ) ].concat( rMap( array.slice( 1 ), callback ) );
 };
 
 // 22. Write a function that counts the number of times a key occurs in an object.
@@ -253,6 +331,16 @@ var rMap = function(array, callback) {
 // countKeysInObj(obj, 'r') // 1
 // countKeysInObj(obj, 'e') // 2
 var countKeysInObj = function(obj, key) {
+  var count = 0;
+  for (var i in obj) {
+   if (i === key) {
+         count++;
+   }
+   if (typeof obj[i] == 'object') {
+      count+= countKeysInObj(obj[i],key);
+   }
+  }
+  return count;
 };
 
 // 23. Write a function that counts the number of times a value occurs in an object.
@@ -260,11 +348,33 @@ var countKeysInObj = function(obj, key) {
 // countValuesInObj(obj, 'r') // 2
 // countValuesInObj(obj, 'e') // 1
 var countValuesInObj = function(obj, value) {
+  var count = 0;
+  for (var key in obj) {
+    if (obj[key] === value) {
+      count++;
+    }
+    if (typeof obj[key] === 'object') {
+      count+= countValuesInObj(obj[key], value);
+    }
+  }
+  return count;
 };
 
 // 24. Find all keys in an object (and nested objects) by a provided name and rename
 // them to a provided new name while preserving the value stored at that key.
 var replaceKeysInObj = function(obj, oldKey, newKey) {
+  for (var key in obj) {
+    if (key === oldKey) {
+      var value = obj[key];
+      key = newKey;
+      obj[newKey] = value;
+      delete obj[oldKey];
+    }
+    if (typeof obj[key] === 'object') {
+       replaceKeysInObj(obj[key], oldKey,newKey);
+    }
+  }
+  return obj;
 };
 
 // 25. Get the first n Fibonacci numbers. In the Fibonacci sequence, each subsequent
@@ -273,14 +383,22 @@ var replaceKeysInObj = function(obj, oldKey, newKey) {
 // fibonacci(5); // [0,1,1,2,3,5]
 // Note: The 0 is not counted.
 var fibonacci = function(n) {
-};
-
+  
+}
 // 26. Return the Fibonacci number located at index n of the Fibonacci sequence.
 // [0,1,1,2,3,5,8,13,21]
 // nthFibo(5); // 5
 // nthFibo(7); // 13
 // nthFibo(3); // 2
 var nthFibo = function(n) {
+  if (n === 0) {
+    return 0;
+  } else if(n === 1) {
+	return 1; 
+  } else if (n < 0) {
+	 return null;
+  }
+  return nthFibo(n - 1) + nthFibo(n - 2);
 };
 
 // 27. Given an array of words, return a new array containing each word capitalized.
